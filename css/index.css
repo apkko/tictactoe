@@ -1,0 +1,12 @@
+body{  
+
+    padding :0;
+    margin :0;
+    background-color:black;
+    top: 0;
+    left: 0;
+    overflow: auto;
+}
+html, body {
+    height: 100%;
+}
