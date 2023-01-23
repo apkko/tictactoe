@@ -10,7 +10,8 @@ export default class{
       
         //this.load.bitmapFont('impact_shadow_stroke','./assets/font/impact_shadow_stroke.png','./assets/font/impact_shadow_stroke.fnt');
         this.load.image('button_play','./assets/img/button_play.png');
-        //this.load.spritesheet('grid_icons', './assets/img/grid_icons.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.image('cell','./assets/img/cell.png');
+        this.load.spritesheet('marks', './assets/img/marks.png', { frameWidth: 50, frameHeight: 50 });
         //this.load.audio('onclick', ['./assets/audio/onclick.ogg']);
     }
 
