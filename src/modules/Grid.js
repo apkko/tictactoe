@@ -1,12 +1,11 @@
 import Phaser from 'phaser';
 import Cell from './Cell';
 export default class extends Phaser.GameObjects.Container {
-    constructor(scene,x,y,countX,countY,winLength){
+    constructor(scene,x,y,countX,countY){
         super(scene, x, y);
         this.scene = scene;
         this.countX = countX;
         this.countY = countY;
-        this.winLength = winLength;
         ////
         this.startCountX = this.countX;
         this.startCountY = this.countY;
@@ -24,19 +23,16 @@ export default class extends Phaser.GameObjects.Container {
         //await this.wait(1000);
         //this.grow();
         
-        this.winText = new Phaser.GameObjects.Text(this.scene,0,-500, '', {font: 'bold 100px Arial',fill: 'white'}); 
-        this.winText.setOrigin(0.5, 0.5);
-        this.add(this.winText);
-        this.winText.setVisible(false);
         
-        this.scene.game.events.on('on_add_mark', this.onAddMark, this);
+        
+        
         this.start();
     }
     start(){
         this.inputEnable();
     }
     async updateCells(){
-        let cellsSize = 50;
+        let cellsSize = 100;
         let xPosStart =  (this.startCountX - this.countX)/2; 
         let yPosStart =  (this.startCountY - this.countY)/2; 
         for(let yPos = yPosStart ; yPos < (this.countY + yPosStart); yPos ++){
@@ -56,54 +52,28 @@ export default class extends Phaser.GameObjects.Container {
   
     }
     async grow(){
-        this.inputDisable()
-        this.countY +=2;
-        this.countX +=2;
-        await this.updateCells();
-        this.inputEnable();
-    }
-    async onAddMark(cell,isPlayer){
-        this.inputDisable();
-        await this.wait(250);
-        ///Проверка на победу
-        //console.log('cell',cell)
-        
-        let playerType = isPlayer ? 'PLAYER' : 'BOT';
-        let horCount = this.getHorisontalMarkedCells(cell.xPos,playerType).length;
-        let verCount = this.getVerticalMarkedCells(cell.yPos,playerType).length;
-        if( (horCount == this.winLength) || (verCount == this.winLength) ){
-            this.win(playerType);
-            //console.log('VICTORI!');
-        }else{
-            //console.log(' horCount verCount this.countX this.countY',horCount,verCount,this.countX,this.countY)
-            ///Если поставил игрок отключаем управление и ждем когда сходит бот
-            
-
-            /////Проверка на увеличение размера
-            if(this.getEmplyCells().length < (this.cells.length*0.3))
-                await this.grow();
-            await this.wait(1000);
-
-
-            ///Если ходил игрок - ходит бот
-            if(isPlayer)
-                await this.botMove();
-            else
-                this.inputEnable();
+        /////Проверка на увеличение размера
+        if(this.getEmplyCells().length < (this.cells.length*0.3)){
+            this.inputDisable()
+            this.countY +=2;
+            this.countX +=2;
+            await this.updateCells();
+            this.inputEnable();
         }
         
     }
-    async win(winner){
-        this.inputDisable();
-        this.winText.setText(winner+' is WIN!')
-        this.winText.setVisible(true);
-    }
+    
+
+    
+    /*
     async playerMove(cell){
         if(this.turnOwnerPlayer){
             await cell.setMark(true);
         }
             
     }
+    */
+    /*
     async botMove(){
         let moves = [];
         let cells = this.getEmplyCells();
@@ -115,11 +85,6 @@ export default class extends Phaser.GameObjects.Container {
             let horNotMarked = this.getHorisontalNotMarkedCells(xPos,'PLAYER');
             console.log('horCount horNotMarked',horCount,horNotMarked.length)
             if( ((horCount + 1) == this.winLength) && (horNotMarked.length == 1) ){
-                /*
-                moves.push({
-                    cell:horNotMarked[0],
-                })
-                */
                 cell = horNotMarked[0];
             }
         }
@@ -128,11 +93,7 @@ export default class extends Phaser.GameObjects.Container {
             let verNotMarked = this.getVerticalNotMarkedCells(yPos,'PLAYER');
             console.log('verCount horNotMarked',verCount,verNotMarked.length)
             if( ((verCount + 1) == this.winLength) && (verNotMarked.length == 1) ){
-                /*
-                moves.push({
-                    cell:horNotMarked[0],
-                })
-                */
+           
                 cell = verNotMarked[0];
             }
         }
@@ -145,6 +106,7 @@ export default class extends Phaser.GameObjects.Container {
         }
         await cell.setMark(false);
     }
+    */
     getEmplyCells(){
         let cells = [];
         for(let i in this.cells){
@@ -153,6 +115,29 @@ export default class extends Phaser.GameObjects.Container {
         }
         return cells;
     }
+    getNeigborsCells(cell){
+        let cells = []; 
+        //console.log('getNeigborsCell cell');
+        for(let i in this.cells){
+            if( (this.cells[i] !== cell) && (( this.cells[i].xPos == (cell.xPos + 1) ) || ( this.cells[i].xPos == (cell.xPos - 1) )) && (( this.cells[i].yPos == (cell.yPos + 1) ) || ( this.cells[i].yPos == (cell.yPos - 1) )) ){
+                //console.log('getNeigborsCell this.cells[i]');
+                cells.push(this.cells[i]);
+            }
+        }
+        return cells;
+    }
+    getNeigborsEmptyCells(cell){
+        let cells = []; 
+        //console.log('getNeigborsCell cell',cell);
+        for(let i in this.cells){
+            if( (this.cells[i] !== cell) && (this.cells[i].isEmpty()) && (( this.cells[i].xPos >= (cell.xPos - 1) ) && ( this.cells[i].xPos <= (cell.xPos + 1) )) && (( this.cells[i].yPos >= (cell.yPos - 1) ) && ( this.cells[i].yPos <= (cell.yPos + 1) )) ){
+                //console.log('getNeigborsCell this.cells[i]');
+                cells.push(this.cells[i]);
+            }
+        }
+        return cells;
+    }
+    
     getCellByPos(xPos,yPos){
         for(let i in this.cells){
             if( (this.cells[i].xPos == xPos) && (this.cells[i].yPos == yPos) )
@@ -160,15 +145,8 @@ export default class extends Phaser.GameObjects.Container {
         }
         return false;
     }
-    async wait(delay){
-        let that = this;
-        return new Promise((resolve) => {
-            that.scene.time.addEvent({
-                delay: delay,
-                callback: () => resolve(),
-            });
-        });
-    }
+    
+    /*
     getNeighborHorisontalMarkedCells(neighborLength){
         let cells = [];
         for(let i in this.cells){
@@ -229,6 +207,7 @@ export default class extends Phaser.GameObjects.Container {
        } 
         return cells;
     }
+    */
     inputEnable(){
         this.cells.forEach(function(cell){
             cell.inputEnable();

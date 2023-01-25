@@ -19,8 +19,8 @@ export default class extends Phaser.GameObjects.Container {
         this.bg.displayWidth = this.size;
         this.bg.displayHeight = this.size;
         
-        this.border = new Phaser.GameObjects.Rectangle(this.scene,0,0,this.size,this.size,0x000000,0.5);
-        this.border.setStrokeStyle(2, 0x722D00);
+        this.border = new Phaser.GameObjects.Rectangle(this.scene,0,0,this.size,this.size,0x000000,0);
+        this.border.setStrokeStyle(2, 0x000000);
         
         this.markImage = new Phaser.GameObjects.Sprite(this.scene, 0,0, 'marks');
         this.markImage.displayWidth = this.size;
@@ -45,22 +45,19 @@ export default class extends Phaser.GameObjects.Container {
         }
     }
     async onClick(){
-        await this.setMark(true);
+        this.scene.game.events.emit('on_cell_click',this);
+        //await this.setMark(true);
     }
-    async setMark(isPlayer){
+    async setMark(user){
         
         if(!this.isMarked){
-            let frame = 1;
-            if(isPlayer){
-                frame = 0;
-                this.markOwner = 'PLAYER';
-            }else{
-                this.markOwner = 'BOT';
-            }
             this.isMarked = true;
+            this.markOwner = user;
+            this.markOwner.markedCells.push(this);
+            let frame = this.markOwner.markType;
             this.markImage.setFrame(frame);
             this.markImage.setVisible(true);
-            this.scene.game.events.emit('on_add_mark',this,isPlayer);
+            this.scene.game.events.emit('on_add_mark',this,this.markOwner);
             this.showMark();
         }
     }

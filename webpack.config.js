@@ -18,13 +18,14 @@ module.exports = (env,options) => {
         path: path.resolve(__dirname, 'build-'+platform),
         filename: BUILD_NAME,
     };
-
+    /*
     let devServer = {
         open: true,
         static: [
             { directory: 'assets', publicPath: '/assets' },
         ],
     };
+    */
     let plugins = [
         new CopyWebpackPlugin({
             patterns:[
@@ -50,7 +51,7 @@ module.exports = (env,options) => {
     return {
         entry,
         output,
-        devServer,
+        //devServer,
         //module,
         plugins,
         performance,

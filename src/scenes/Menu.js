@@ -22,7 +22,7 @@ export default class{
         this.add.existing(button);
         button.setInteractive();
         button.on('pointerdown', () => {
-            that.scene.start('Game');
+            that.scene.start('Game',{winCellsLimit:5});
         });
     }
 }

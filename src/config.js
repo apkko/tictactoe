@@ -3,6 +3,7 @@ export default {
     width: 1920,
     height: 1080,
     parent: 'phaser_div',
+    backgroundColor:'#FFFFFF',
     audio: {
         disableWebAudio: true
     },
