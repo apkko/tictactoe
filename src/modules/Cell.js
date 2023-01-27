@@ -45,7 +45,7 @@ export default class extends Phaser.GameObjects.Container {
         }
     }
     async onClick(){
-        this.scene.game.events.emit('on_cell_click',this);
+        this.scene.game.emitter.emit('on_cell_click',this);
         //await this.setMark(true);
     }
     async setMark(user){
@@ -57,7 +57,7 @@ export default class extends Phaser.GameObjects.Container {
             let frame = this.markOwner.markType;
             this.markImage.setFrame(frame);
             this.markImage.setVisible(true);
-            this.scene.game.events.emit('on_add_mark',this,this.markOwner);
+            this.scene.game.emitter.emit('on_add_mark',this,this.markOwner);
             this.showMark();
         }
     }

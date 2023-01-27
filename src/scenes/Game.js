@@ -9,6 +9,7 @@ export default class{
 
     init( data ) {
         this.winCellsLimit = data.winCellsLimit;
+        this.growSize = data.growSize;
         this.users = [];
         this.turnOwner = null;
         this.turnPause = null;
@@ -21,8 +22,9 @@ export default class{
 
     create() {
         console.log('[Game] create');
+        this.game.emitter.removeAllListeners();
         /////Сетка
-        this.grid = new Grid(this,this.cameras.main.centerX,this.cameras.main.centerY,3,3);
+        this.grid = new Grid(this,this.cameras.main.centerX,this.cameras.main.centerY,3,3,this.growSize);
         this.add.existing(this.grid);
         
         this.turnOwnerText = new Phaser.GameObjects.Text(this,this.cameras.main.centerX,25, '', {font: 'bold 50px Arial',fill: 'black'}); 
@@ -34,15 +36,25 @@ export default class{
         this.winText.setOrigin(0.5, 0.5);
         this.add.existing(this.winText);
         this.winText.setVisible(false);
+        this.addMenuButton()
         ///////////////////////////////
         this.userPlayer = new Player(this);
         this.userBot = new Bot(this);
         this.users = [this.userPlayer,this.userBot];
-        this.game.events.on('on_add_mark', this.onAddMark, this);
+        this.game.emitter.on('on_add_mark', this.onAddMark, this);
         this.start();
     }
     start(){
         this.turnStart();
+    }
+    addMenuButton(){
+        let that = this;
+        let button = new Phaser.GameObjects.Sprite(this, this.cameras.main.width - 100,50,'button_menu');
+        this.add.existing(button);
+        button.setInteractive();
+        button.on('pointerdown', () => {
+            that.scene.start('Menu');
+        });
     }
     turnEnd(){
         

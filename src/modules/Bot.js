@@ -16,9 +16,9 @@ export default class extends User{
         //let emptyCells = this.scene.grid.getEmplyCells();
         let bestMove = this.getBestMove();
         let opponentBestMove = this.scene.userPlayer.getBestMove();
-        console.log('bestMove.count',bestMove.count)
-        console.log('opponentBestMove.count',opponentBestMove.count)
-        console.log('limitCount',limitCount)
+        //console.log('bestMove.count',bestMove.count)
+        //console.log('opponentBestMove.count',opponentBestMove.count)
+        //console.log('limitCount',limitCount)
         if(bestMove.count == limitCount){
             cell = bestMove.cell;
         }else if(opponentBestMove.count == limitCount){

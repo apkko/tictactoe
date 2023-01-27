@@ -1,11 +1,12 @@
 import Phaser from 'phaser';
 import Cell from './Cell';
 export default class extends Phaser.GameObjects.Container {
-    constructor(scene,x,y,countX,countY){
+    constructor(scene,x,y,countX,countY,growSize){
         super(scene, x, y);
         this.scene = scene;
         this.countX = countX;
         this.countY = countY;
+        this.growSize = growSize;
         ////
         this.startCountX = this.countX;
         this.startCountY = this.countY;
@@ -53,7 +54,7 @@ export default class extends Phaser.GameObjects.Container {
     }
     async grow(){
         /////Проверка на увеличение размера
-        if(this.getEmplyCells().length < (this.cells.length*0.3)){
+        if(this.getEmplyCells().length < (this.cells.length*(1 - this.growSize))){
             this.inputDisable()
             this.countY +=2;
             this.countX +=2;
